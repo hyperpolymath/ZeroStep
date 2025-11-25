@@ -1,0 +1,87 @@
+{
+  "$schema": "https://slsa.dev/provenance/v1",
+  "version": "1.0.0",
+  "metadata": {
+    "project": "VAE Dataset Normalizer",
+    "repository": "https://huggingface.co/datasets/joshuajewell/VAEDecodedImages-SDXL",
+    "license": "MIT",
+    "spdx": "SPDX-License-Identifier: MIT"
+  },
+  "subject": [
+    {
+      "name": "vae-normalizer",
+      "type": "application/x-executable",
+      "digest": {
+        "algorithm": "SHAKE256-d256",
+        "note": "Computed at build time"
+      }
+    }
+  ],
+  "buildDefinition": {
+    "buildType": "rust-cargo",
+    "externalParameters": {
+      "source": {
+        "uri": "https://huggingface.co/datasets/joshuajewell/VAEDecodedImages-SDXL",
+        "digest": {
+          "gitCommit": "HEAD"
+        }
+      }
+    },
+    "internalParameters": {
+      "rustVersion": "stable",
+      "profile": "release",
+      "target": "native"
+    }
+  },
+  "runDetails": {
+    "builder": {
+      "id": "local",
+      "version": {
+        "cargo": "1.70+",
+        "rustc": "1.70+"
+      }
+    },
+    "metadata": {
+      "invocation": "cargo build --release",
+      "startedOn": null,
+      "finishedOn": null
+    }
+  },
+  "materials": [
+    {
+      "name": "source-dataset",
+      "uri": "https://huggingface.co/datasets/alexandrainst/nordjylland-news-image-captioning",
+      "type": "dataset",
+      "license": "See source"
+    }
+  ],
+  "attribution": [
+    {
+      "role": "author",
+      "name": "Joshua Jewell",
+      "contribution": "Primary development"
+    },
+    {
+      "role": "source-dataset",
+      "name": "alexandrainst",
+      "contribution": "Original image dataset"
+    }
+  ],
+  "verification": {
+    "formalMethods": {
+      "tool": "Isabelle/HOL",
+      "theory": "VAEDataset_Splits.thy",
+      "properties": [
+        "disjoint_splits",
+        "exhaustive_splits",
+        "ratio_correctness",
+        "original_vae_bijection"
+      ]
+    },
+    "checksums": {
+      "algorithm": "SHAKE256",
+      "outputBits": 256,
+      "reference": "FIPS 202"
+    }
+  }
+}

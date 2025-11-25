@@ -1,0 +1,45 @@
+/* SPDX-FileCopyrightText: 2024 Joshua Jewell */
+/* SPDX-License-Identifier: MIT */
+
+/* TEAM */
+Creator: Joshua Jewell
+Role: Author, Maintainer
+Site: https://huggingface.co/joshuajewell
+Location: Earth
+
+/* THANKS */
+Name: alexandrainst
+Note: Original nordjylland-news-image-captioning dataset
+
+Name: Hugging Face
+Note: Dataset hosting platform
+
+Name: Rust Community
+Note: Language and tooling
+
+Name: Isabelle/HOL Team
+Note: Formal verification framework
+
+/* SITE */
+Last update: 2024-01-01
+Language: English
+Standards: RSR (Rhodium Standard Repository)
+Doctype: UTF-8
+IDE: Various
+
+/* TECHNOLOGY */
+Language: Rust
+Build: Cargo
+Container: Podman + Chainguard Wolfi
+Configuration: Nickel, CUE
+Formal Verification: Isabelle/HOL
+Checksums: SHAKE256 (d=256)
+
+/* LICENSE */
+Software: MIT
+Dataset: See source dataset
+
+/* PROJECT */
+Purpose: Normalize VAE-decoded image datasets for AI artifact detection
+Goal: Enable training models to identify diffusion model outputs
+Approach: Paired original/VAE images with formal guarantees

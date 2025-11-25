@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: 2024 Joshua Jewell -->
+<!-- SPDX-License-Identifier: MIT -->
+
 # VAE Dataset Normalizer
 
 Normalize VAE-decoded image datasets for training AI artifact detection models with formal verification guarantees.

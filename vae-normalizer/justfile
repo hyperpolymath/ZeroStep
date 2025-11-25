@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2024 Joshua Jewell
+# SPDX-License-Identifier: MIT
+#
 # VAE Dataset Normalizer - Justfile
 # ==================================
 #
@@ -192,3 +195,122 @@ stats:
     @echo ""
     @echo "Manifest:"
     @wc -l {{output}}/manifest.csv 2>/dev/null || echo "  No manifest found"
+
+# ============================================================================
+# RSR (Rhodium Standard Repository) Compliance
+# ============================================================================
+
+# Run full RSR validation
+validate: rsr-docs rsr-spdx rsr-well-known rsr-security fmt clippy test
+    @echo ""
+    @echo "RSR Validation Complete"
+    @echo "======================="
+
+# Check RSR documentation requirements
+rsr-docs:
+    @echo "Checking RSR documentation..."
+    @test -f README.md && echo "  README.md: OK" || echo "  README.md: MISSING"
+    @test -f LICENSE.txt && echo "  LICENSE.txt: OK" || echo "  LICENSE.txt: MISSING"
+    @test -f SECURITY.md && echo "  SECURITY.md: OK" || echo "  SECURITY.md: MISSING"
+    @test -f CODE_OF_CONDUCT.md && echo "  CODE_OF_CONDUCT.md: OK" || echo "  CODE_OF_CONDUCT.md: MISSING"
+    @test -f CONTRIBUTING.adoc && echo "  CONTRIBUTING.adoc: OK" || echo "  CONTRIBUTING.adoc: MISSING"
+    @test -f FUNDING.yml && echo "  FUNDING.yml: OK" || echo "  FUNDING.yml: MISSING"
+    @test -f GOVERNANCE.adoc && echo "  GOVERNANCE.adoc: OK" || echo "  GOVERNANCE.adoc: MISSING"
+    @test -f MAINTAINERS.md && echo "  MAINTAINERS.md: OK" || echo "  MAINTAINERS.md: MISSING"
+    @test -f .gitignore && echo "  .gitignore: OK" || echo "  .gitignore: MISSING"
+    @test -f .gitattributes && echo "  .gitattributes: OK" || echo "  .gitattributes: MISSING"
+    @test -f CHANGELOG.md && echo "  CHANGELOG.md: OK" || echo "  CHANGELOG.md: MISSING"
+    @test -f ROADMAP.md && echo "  ROADMAP.md: OK" || echo "  ROADMAP.md: MISSING"
+    @test -f REVERSIBILITY.md && echo "  REVERSIBILITY.md: OK" || echo "  REVERSIBILITY.md: MISSING"
+
+# Check SPDX headers on source files
+rsr-spdx:
+    @echo "Checking SPDX headers..."
+    @grep -l "SPDX-License-Identifier" src/*.rs && echo "  Rust sources: OK" || echo "  Rust sources: MISSING SPDX"
+    @grep -l "SPDX-License-Identifier" *.jl && echo "  Julia sources: OK" || echo "  Julia sources: MISSING SPDX"
+    @grep -l "SPDX-License-Identifier" *.cue && echo "  CUE schemas: OK" || echo "  CUE schemas: MISSING SPDX"
+    @grep -l "SPDX-License-Identifier" *.ncl && echo "  Nickel configs: OK" || echo "  Nickel configs: MISSING SPDX"
+    @grep -l "SPDX-License-Identifier" *.thy && echo "  Isabelle theories: OK" || echo "  Isabelle theories: MISSING SPDX"
+    @grep -l "SPDX-License-Identifier" flake.nix && echo "  Nix flake: OK" || echo "  Nix flake: MISSING SPDX"
+    @grep -l "SPDX-License-Identifier" Containerfile && echo "  Containerfile: OK" || echo "  Containerfile: MISSING SPDX"
+
+# Check .well-known directory
+rsr-well-known:
+    @echo "Checking .well-known directory..."
+    @test -d .well-known && echo "  .well-known/: OK" || echo "  .well-known/: MISSING"
+    @test -f .well-known/security.txt && echo "  security.txt: OK" || echo "  security.txt: MISSING"
+    @test -f .well-known/ai.txt && echo "  ai.txt: OK" || echo "  ai.txt: MISSING"
+    @test -f .well-known/consent-required.txt && echo "  consent-required.txt: OK" || echo "  consent-required.txt: MISSING"
+    @test -f .well-known/provenance.json && echo "  provenance.json: OK" || echo "  provenance.json: MISSING"
+    @test -f .well-known/humans.txt && echo "  humans.txt: OK" || echo "  humans.txt: MISSING"
+
+# Check security requirements
+rsr-security:
+    @echo "Checking security requirements..."
+    @echo "  Type safety: Rust (compile-time checked)"
+    @echo "  Memory safety: Rust ownership model"
+    @grep -q "cgr.dev/chainguard" Containerfile && echo "  Container base: Chainguard Wolfi" || echo "  Container base: NOT Chainguard"
+    @grep -q "USER" Containerfile && echo "  Non-root container: OK" || echo "  Non-root container: MISSING"
+
+# Audit licenses
+audit-licence:
+    @echo "Auditing licenses..."
+    @grep -r "SPDX-License-Identifier" src/ *.rs *.jl *.cue *.ncl *.thy 2>/dev/null | wc -l | xargs -I {} echo "  Files with SPDX headers: {}"
+    @echo "  License: MIT (see LICENSE.txt)"
+
+# Generate SBOM (Software Bill of Materials)
+sbom-generate:
+    @echo "Generating SBOM..."
+    @if command -v cargo-sbom >/dev/null 2>&1; then \
+        cargo sbom > sbom.json; \
+        echo "  SBOM written to sbom.json"; \
+    else \
+        echo "  cargo-sbom not installed. Install with: cargo install cargo-sbom"; \
+    fi
+
+# Check for floating dependency versions
+audit-deps:
+    @echo "Checking dependency versions..."
+    @grep -E "~|\\^" Cargo.toml && echo "  WARNING: Floating versions found" || echo "  OK: No floating versions"
+    @if command -v cargo-audit >/dev/null 2>&1; then \
+        cargo audit; \
+    else \
+        echo "  cargo-audit not installed. Install with: cargo install cargo-audit"; \
+    fi
+
+# Check links in documentation
+check-links:
+    @echo "Checking documentation links..."
+    @if command -v lychee >/dev/null 2>&1; then \
+        lychee --verbose *.md *.adoc; \
+    else \
+        echo "  lychee not installed. Install with: cargo install lychee"; \
+    fi
+
+# Build container with Podman
+container-build:
+    @echo "Building container with Podman..."
+    podman build -t vae-normalizer -f Containerfile .
+
+# Run container
+container-run:
+    @echo "Running container..."
+    podman run --rm -v ./data:/data:Z vae-normalizer --help
+
+# Full RSR compliance report
+rsr-report:
+    @echo "============================================"
+    @echo "RSR Compliance Report"
+    @echo "============================================"
+    @echo ""
+    @just rsr-docs
+    @echo ""
+    @just rsr-spdx
+    @echo ""
+    @just rsr-well-known
+    @echo ""
+    @just rsr-security
+    @echo ""
+    @echo "============================================"
+    @echo "Run 'just validate' for full validation"
+    @echo "============================================"

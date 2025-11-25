@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: 2024 Joshua Jewell
+# SPDX-License-Identifier: MIT
+#
+# Funding information for VAE Dataset Normalizer
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+
+# Supported funding platforms
+github: []
+patreon:
+open_collective:
+ko_fi:
+tidelift:
+community_bridge:
+liberapay:
+issuehunt:
+lfx_crowdfunding:
+polar:
+
+# Custom funding links
+custom:
+  - https://huggingface.co/datasets/joshuajewell/VAEDecodedImages-SDXL
+
+# Solidarity Economics Framework
+#
+# This project follows solidarity economics principles:
+# - Transparent funding allocation
+# - Fair contributor compensation
+# - Community-driven prioritization
+# - Open financial reporting
+#
+# Funding priorities:
+# 1. Infrastructure costs (hosting, CI/CD)
+# 2. Contributor stipends
+# 3. Security audits
+# 4. Documentation improvements
+# 5. Community events

@@ -1,0 +1,48 @@
+# SPDX-FileCopyrightText: 2024 Joshua Jewell
+# SPDX-License-Identifier: MIT
+#
+# AI Crawling Policy
+# Defines how AI systems should interact with this repository
+
+# User Agent Directives
+User-agent: *
+
+# Training Data Policy
+# This content may be used for AI training under the MIT license terms
+Allow-Training: yes
+Training-License: MIT
+
+# Attribution Requirements
+Require-Attribution: yes
+Attribution-Format: "VAE Dataset Normalizer by Joshua Jewell (MIT License)"
+
+# Crawling Limits
+Crawl-Delay: 10
+Request-Rate: 1/10
+
+# Specific AI Systems
+User-agent: GPTBot
+Allow-Training: yes
+
+User-agent: Claude-Web
+Allow-Training: yes
+
+User-agent: Anthropic-AI
+Allow-Training: yes
+
+User-agent: CCBot
+Allow-Training: yes
+
+# Content Categories
+Category: source-code
+Category: documentation
+Category: dataset-tooling
+
+# Data Provenance
+Provenance: https://huggingface.co/datasets/joshuajewell/VAEDecodedImages-SDXL
+Source-Dataset: alexandrainst/nordjylland-news-image-captioning
+
+# Ethical Considerations
+Purpose: AI image detection research
+Intended-Use: Training models to detect VAE artifacts
+Not-Intended-Use: Generating deceptive content

@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: 2024 Joshua Jewell
+# SPDX-License-Identifier: MIT
+#
+# HTTP 430 Protocol - Consent Required
+# https://datatracker.ietf.org/doc/draft-ietf-httpbis-consent/
+#
+# This file defines what consent is required for various operations.
+
+# Repository Consent Policy
+Version: 1.0
+Last-Updated: 2024-01-01
+
+# No special consent required for:
+# - Reading source code
+# - Downloading releases
+# - Forking repository
+# - Using under MIT license
+
+# Operations Requiring Consent
+Consent-Required:
+  - Commercial redistribution (must attribute)
+  - Trademark usage (project name in commercial context)
+  - Warranty claims (none provided)
+
+# Data Processing
+Data-Minimization: true
+Analytics: none
+Tracking: none
+Cookies: none
+
+# Third-Party Services
+# List any third-party services and their privacy policies
+Third-Parties:
+  - name: Hugging Face
+    purpose: Dataset hosting
+    policy: https://huggingface.co/privacy
+  - name: GitLab
+    purpose: Source code hosting
+    policy: https://about.gitlab.com/privacy/
+
+# Contact for Consent Questions
+Contact: Repository issues

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2024 Joshua Jewell
+// SPDX-License-Identifier: MIT
+
 // VAEDecodedImages-SDXL Metadata Schema
 // Validates dataset metadata against Dublin Core Metadata Initiative (DCMI) terms
 // Reference: https://www.dublincore.org/specifications/dublin-core/dcmi-terms/

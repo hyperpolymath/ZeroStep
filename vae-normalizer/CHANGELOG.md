@@ -1,0 +1,86 @@
+<!-- SPDX-FileCopyrightText: 2024 Joshua Jewell -->
+<!-- SPDX-License-Identifier: MIT -->
+
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+- RSR (Rhodium Standard Repository) compliance
+- Full documentation suite
+
+## [1.0.0] - 2024-01-01
+
+### Added
+
+#### Core Features
+- SHAKE256 (d=256) cryptographic checksums for all image files
+- Train/test/validation/calibration splits (70/15/10/5 ratio)
+- Both random and stratified split generation
+- Size-based stratification with configurable bins
+
+#### Metadata & Configuration
+- CUE metadata generation with Dublin Core compliance
+- Nickel configuration schema
+- SPDX headers on all source files
+
+#### Formal Verification
+- Isabelle/HOL proofs for split properties
+  - Disjointness (no overlap between splits)
+  - Exhaustiveness (all images assigned)
+  - Ratio correctness (within 1% tolerance)
+  - Original-VAE bijection preservation
+
+#### CLI
+- `normalize` subcommand for dataset processing
+- `verify` subcommand for output validation
+- `stats` subcommand for statistics display
+- `hash` subcommand for single-file checksums
+- Comprehensive help and examples
+
+#### Infrastructure
+- Nix flake for reproducible builds
+- Podman container with Chainguard Wolfi base
+- Justfile task runner
+- Julia utilities for Flux.jl training
+
+#### Documentation
+- README with usage examples
+- QUICKSTART guide
+- RSR compliance documentation
+- Security policy
+- Contributing guidelines (TPCF)
+- Governance model
+
+### Security
+- Memory-safe Rust implementation
+- No unsafe code blocks
+- FIPS 202 compliant cryptography
+- Non-root container execution
+- Supply chain security (SPDX, pinned deps)
+
+## Migration Guide
+
+### From v0.x to v1.0.0
+
+This is the initial release. No migration needed.
+
+## Version History
+
+| Version | Release Date | Status |
+|---------|--------------|--------|
+| 1.0.0   | 2024-01-01   | Current |
+
+## Deprecation Policy
+
+- Deprecated features announced one minor version before removal
+- Migration guides provided for breaking changes
+- LTS branches may be created for critical security fixes
+
+[Unreleased]: https://huggingface.co/datasets/joshuajewell/VAEDecodedImages-SDXL/compare/v1.0.0...HEAD
+[1.0.0]: https://huggingface.co/datasets/joshuajewell/VAEDecodedImages-SDXL/releases/tag/v1.0.0

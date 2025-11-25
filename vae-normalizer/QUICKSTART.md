@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: 2024 Joshua Jewell -->
+<!-- SPDX-License-Identifier: MIT -->
+
 # Quick Start Guide
 
 Get up and running with vae-normalizer in 5 minutes.

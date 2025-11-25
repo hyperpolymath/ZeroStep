@@ -1,3 +1,6 @@
+(* SPDX-FileCopyrightText: 2024 Joshua Jewell *)
+(* SPDX-License-Identifier: MIT *)
+
 (*
   VAE Dataset Splits - Formal Verification
   =========================================

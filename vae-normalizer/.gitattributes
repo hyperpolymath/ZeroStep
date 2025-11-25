@@ -1,0 +1,81 @@
+# SPDX-FileCopyrightText: 2024 Joshua Jewell
+# SPDX-License-Identifier: MIT
+
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Rust sources
+*.rs text diff=rust
+Cargo.toml text
+Cargo.lock text -diff
+
+# Shell scripts
+*.sh text eol=lf
+
+# Configuration
+*.toml text
+*.yaml text
+*.yml text
+*.json text
+*.cue text
+*.ncl text
+justfile text
+Makefile text
+
+# Documentation
+*.md text diff=markdown
+*.adoc text
+*.txt text
+*.rst text
+
+# Isabelle theory files
+*.thy text
+
+# Julia
+*.jl text
+
+# Nix
+*.nix text
+
+# Container
+Containerfile text
+Dockerfile text
+
+# Git
+.gitignore text
+.gitattributes text
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.pdf binary
+
+# Archives
+*.zip binary
+*.tar binary
+*.gz binary
+*.xz binary
+*.bz2 binary
+
+# Executables
+*.exe binary
+*.dll binary
+*.so binary
+*.dylib binary
+
+# Export-ignore (not included in archives)
+.git* export-ignore
+.github export-ignore
+.gitlab export-ignore
+.well-known export-ignore
+tests/ export-ignore
+target/ export-ignore
+
+# Linguist overrides
+*.thy linguist-language=Isabelle
+*.ncl linguist-language=Nickel
+*.cue linguist-language=CUE

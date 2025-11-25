@@ -1,0 +1,234 @@
+// SPDX-FileCopyrightText: 2024 Joshua Jewell
+// SPDX-License-Identifier: MIT
+= Contributing to VAE Dataset Normalizer
+:toc:
+:toclevels: 3
+
+Thank you for your interest in contributing! This document outlines how to contribute effectively.
+
+== Tri-Perimeter Contribution Framework (TPCF)
+
+This project uses the Tri-Perimeter Contribution Framework to balance openness with security and quality.
+
+=== Perimeter 1: Core (Maintainers Only)
+
+**Access**: Maintainers listed in MAINTAINERS.md only
+
+**Responsibilities**:
+
+* Security-critical code changes
+* Architecture decisions
+* Release management
+* Merge authority
+* Code of Conduct enforcement
+
+**How to become a Core contributor**:
+
+1. Demonstrate sustained contribution over 6+ months
+2. Pass security review
+3. Unanimous approval from existing maintainers
+4. Sign maintainer agreement
+
+=== Perimeter 2: Expert (Trusted Contributors)
+
+**Access**: Approved contributors with direct commit access to development branches
+
+**Responsibilities**:
+
+* Feature development
+* Bug fixes
+* Documentation improvements
+* Code review
+* Mentoring Perimeter 3 contributors
+
+**How to become an Expert contributor**:
+
+1. Submit 5+ accepted contributions from Perimeter 3
+2. Demonstrate understanding of codebase architecture
+3. Approval from 2+ Core maintainers
+4. Agree to security practices
+
+=== Perimeter 3: Community (Open Sandbox)
+
+**Access**: Anyone can contribute via merge requests
+
+**Contribution types**:
+
+* Bug reports
+* Feature suggestions
+* Documentation fixes
+* Test improvements
+* Translations
+
+**Process**:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make changes with appropriate tests
+4. Submit merge request
+5. Address review feedback
+6. Maintainer merges after approval
+
+== Developer Certificate of Origin (DCO)
+
+By contributing to this project, you certify that:
+
+[source]
+----
+Developer Certificate of Origin
+Version 1.1
+
+Copyright (C) 2004, 2006 The Linux Foundation and its contributors.
+
+Everyone is permitted to copy and distribute verbatim copies of this
+license document, but changing it is not allowed.
+
+Developer's Certificate of Origin 1.1
+
+By making a contribution to this project, I certify that:
+
+(a) The contribution was created in whole or in part by me and I
+    have the right to submit it under the open source license
+    indicated in the file; or
+
+(b) The contribution is based upon previous work that, to the best
+    of my knowledge, is covered under an appropriate open source
+    license and I have the right under that license to submit that
+    work with modifications, whether created in whole or in part
+    by me, under the same open source license (unless I am
+    permitted to submit under a different license), as indicated
+    in the file; or
+
+(c) The contribution was provided directly to me by some other
+    person who certified (a), (b) or (c) and I have not modified
+    it.
+
+(d) I understand and agree that this project and the contribution
+    are public and that a record of the contribution (including all
+    personal information I submit with it, including my sign-off) is
+    maintained indefinitely and may be redistributed consistent with
+    this project or the open source license(s) involved.
+----
+
+Sign your commits with `git commit -s` to indicate DCO compliance.
+
+== Code Standards
+
+=== Language Requirements
+
+This project uses **Rust** for its type safety and memory safety guarantees.
+
+* No unsafe code without explicit justification
+* All public APIs must be documented
+* Tests required for new functionality
+
+=== SPDX Headers
+
+Every source file must include SPDX headers:
+
+[source,rust]
+----
+// SPDX-FileCopyrightText: 2024 Your Name
+// SPDX-License-Identifier: MIT
+----
+
+=== Commit Messages
+
+Follow conventional commits:
+
+[source]
+----
+type(scope): description
+
+[optional body]
+
+[optional footer]
+----
+
+Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+
+Example:
+[source]
+----
+feat(splits): add support for custom split ratios
+
+Allow users to specify custom train/test/val/cal ratios
+via --train-ratio, --test-ratio, etc. flags.
+
+Closes #42
+----
+
+=== Testing
+
+[source,bash]
+----
+# Run all tests
+just test
+
+# Run specific test
+cargo test test_name
+
+# Run with coverage
+just coverage
+----
+
+=== Linting
+
+[source,bash]
+----
+# Format code
+just fmt
+
+# Run clippy
+just clippy
+
+# Full validation
+just validate
+----
+
+== Submitting Changes
+
+=== Bug Reports
+
+1. Check existing issues first
+2. Use the bug report template
+3. Include:
+   - Version information
+   - Steps to reproduce
+   - Expected vs actual behavior
+   - Relevant logs
+
+=== Feature Requests
+
+1. Check existing issues and roadmap
+2. Use feature request template
+3. Describe the use case
+4. Propose solution (optional)
+
+=== Merge Requests
+
+1. Create from your fork
+2. Target `main` branch
+3. Fill out MR template completely
+4. Ensure CI passes
+5. Request review
+6. Address feedback
+7. Squash commits if requested
+
+== Communication
+
+* **Issues**: Bug reports, feature requests
+* **Discussions**: General questions, ideas
+* **Security**: See SECURITY.md
+
+== Recognition
+
+Contributors are recognized in:
+
+* MAINTAINERS.md (for sustained contributions)
+* Release notes (for specific contributions)
+* Hall of Fame (for security researchers)
+
+== Questions?
+
+Open a discussion or issue with the `question` label.

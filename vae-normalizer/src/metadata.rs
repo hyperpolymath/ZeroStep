@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2024 Joshua Jewell
+// SPDX-License-Identifier: MIT
+
 //! CUE Metadata Generation with Dublin Core Compliance
 //!
 //! Generates dataset metadata following Dublin Core Metadata Initiative (DCMI) terms.
