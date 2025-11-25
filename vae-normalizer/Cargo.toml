@@ -1,0 +1,42 @@
+[package]
+name = "vae-normalizer"
+version = "1.0.0"
+edition = "2021"
+authors = ["Joshua Jewell"]
+description = "VAE dataset normalizer with formal verification and cryptographic integrity"
+license = "MIT"
+repository = "https://huggingface.co/datasets/joshuajewell/VAEDecodedImages-SDXL"
+
+[dependencies]
+# SHAKE256 implementation
+tiny-keccak = { version = "2.0", features = ["shake"] }
+# CLI argument parsing
+clap = { version = "4.4", features = ["derive"] }
+# CSV handling
+csv = "1.3"
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+# Random number generation for splits
+rand = "0.8"
+rand_chacha = "0.3"
+# File walking
+walkdir = "2.5"
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+# Parallel processing
+rayon = "1.10"
+# Progress indication
+indicatif = "0.17"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.dev]
+opt-level = 0
+debug = true

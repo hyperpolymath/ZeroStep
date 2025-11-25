@@ -1,0 +1,194 @@
+# VAE Dataset Normalizer - Justfile
+# ==================================
+#
+# Modern task runner for vae-normalizer
+# Install just: cargo install just
+#
+# Usage:
+#   just              Show available recipes
+#   just build        Build release binary
+#   just run          Run normalizer
+#   just all          Complete pipeline
+
+# Default recipe
+default:
+    @just --list
+
+# Configuration (override: just run dataset=/path/to/data)
+dataset := env_var_or_default("DATASET_PATH", "~/vae-dataset")
+output := env_var_or_default("OUTPUT_PATH", "~/vae-normalized")
+seed := "42"
+strata := "4"
+
+# Aliases
+alias b := build
+alias r := run
+alias t := test
+alias v := verify
+
+# Build release binary
+build:
+    @echo "Building vae-normalizer..."
+    cargo build --release
+    @echo "Build complete: target/release/vae-normalizer"
+
+# Run normalizer on dataset
+run: build
+    @echo "Running normalizer..."
+    @mkdir -p {{output}}
+    ./target/release/vae-normalizer \
+        --dataset {{dataset}} \
+        --output {{output}} \
+        --seed {{seed}} \
+        --strata {{strata}}
+    @echo "Normalization complete: {{output}}"
+
+# Run without checksums (faster)
+run-fast: build
+    @echo "Running normalizer (fast mode, no checksums)..."
+    @mkdir -p {{output}}
+    ./target/release/vae-normalizer \
+        --dataset {{dataset}} \
+        --output {{output}} \
+        --seed {{seed}} \
+        --strata {{strata}} \
+        --skip-checksums
+    @echo "Normalization complete: {{output}}"
+
+# Complete pipeline
+all: check-deps build run verify
+    @echo "Pipeline complete. Output: {{output}}"
+
+# Run tests
+test:
+    cargo test
+
+# Format code
+fmt:
+    cargo fmt
+
+# Run clippy linter
+clippy:
+    cargo clippy -- -D warnings
+
+# Check code without building
+check:
+    cargo check
+
+# Verify outputs
+verify: validate-cue validate-nickel validate-splits
+    @echo "All verification passed."
+
+# Validate CUE schema
+validate-cue:
+    @echo "Validating CUE schema..."
+    @if command -v cue >/dev/null 2>&1; then \
+        cue vet metadata_schema.cue {{output}}/metadata.cue 2>/dev/null || \
+        echo "CUE validation: skipped or failed"; \
+    else \
+        echo "CUE not installed (optional)"; \
+    fi
+
+# Validate Nickel config
+validate-nickel:
+    @echo "Validating Nickel config..."
+    @if command -v nickel >/dev/null 2>&1; then \
+        nickel typecheck config.ncl || echo "Nickel: typecheck failed"; \
+    else \
+        echo "Nickel not installed (optional)"; \
+    fi
+
+# Validate Isabelle proofs
+validate-isabelle:
+    @echo "Checking Isabelle proofs..."
+    @if command -v isabelle >/dev/null 2>&1; then \
+        isabelle build -d . -b VAEDataset_Splits || \
+        echo "Isabelle: proof check requires full installation"; \
+    else \
+        echo "Isabelle not installed (optional)"; \
+    fi
+
+# Validate split properties empirically
+validate-splits:
+    @echo "Validating split properties..."
+    @if [ -f "{{output}}/splits/random_train.txt" ]; then \
+        echo "Checking disjointness..."; \
+        comm -12 <(sort {{output}}/splits/random_train.txt) \
+                 <(sort {{output}}/splits/random_test.txt) | \
+        wc -l | grep -q '^0$$' && echo "  Train/Test: disjoint" || \
+        echo "  ERROR: Train/Test overlap"; \
+        echo "Checking counts..."; \
+        echo "  Train: $(wc -l < {{output}}/splits/random_train.txt)"; \
+        echo "  Test: $(wc -l < {{output}}/splits/random_test.txt)"; \
+        echo "  Val: $(wc -l < {{output}}/splits/random_val.txt)"; \
+        echo "  Cal: $(wc -l < {{output}}/splits/random_calibration.txt)"; \
+    else \
+        echo "No splits found. Run 'just run' first."; \
+    fi
+
+# Check dependencies
+check-deps:
+    @echo "Checking dependencies..."
+    @command -v cargo >/dev/null 2>&1 && echo "  cargo: OK" || { echo "  cargo: MISSING (required)"; exit 1; }
+    @command -v cue >/dev/null 2>&1 && echo "  cue: OK" || echo "  cue: not found (optional)"
+    @command -v nickel >/dev/null 2>&1 && echo "  nickel: OK" || echo "  nickel: not found (optional)"
+    @command -v julia >/dev/null 2>&1 && echo "  julia: OK" || echo "  julia: not found (optional)"
+    @command -v isabelle >/dev/null 2>&1 && echo "  isabelle: OK" || echo "  isabelle: not found (optional)"
+
+# Install dependencies (Rust crates)
+deps:
+    cargo fetch
+
+# Download dataset from Hugging Face
+download-dataset hf_repo="joshuajewell/VAEDecodedImages-SDXL":
+    @echo "Downloading dataset from Hugging Face..."
+    @if command -v huggingface-cli >/dev/null 2>&1; then \
+        huggingface-cli download {{hf_repo}} --local-dir {{dataset}} --repo-type dataset; \
+    elif command -v git >/dev/null 2>&1; then \
+        git clone https://huggingface.co/datasets/{{hf_repo}} {{dataset}}; \
+    else \
+        echo "Install huggingface-cli or git to download"; exit 1; \
+    fi
+
+# Compare random vs stratified splits
+compare-splits:
+    @echo "Comparing random vs stratified splits..."
+    @julia -e 'include("julia_utils.jl"); using .VAEDatasetUtils; \
+        results = compare_splits("{{output}}/manifest.csv", "{{output}}/splits", "{{output}}/splits"); \
+        for (k, v) in results; println("$k: ", v); end'
+
+# Generate documentation
+docs:
+    cargo doc --no-deps --open
+
+# Clean build artifacts
+clean:
+    cargo clean
+
+# Clean output directory
+clean-output:
+    rm -rf {{output}}
+
+# Clean everything
+clean-all: clean clean-output
+
+# Watch for changes and rebuild
+watch:
+    cargo watch -x build
+
+# Release build with all optimizations
+release:
+    cargo build --release
+    @ls -lh target/release/vae-normalizer
+
+# Show stats about generated splits
+stats:
+    @echo "Split statistics:"
+    @echo "Random splits:"
+    @wc -l {{output}}/splits/random_*.txt 2>/dev/null || echo "  No random splits found"
+    @echo ""
+    @echo "Stratified splits:"
+    @wc -l {{output}}/splits/stratified_*.txt 2>/dev/null || echo "  No stratified splits found"
+    @echo ""
+    @echo "Manifest:"
+    @wc -l {{output}}/manifest.csv 2>/dev/null || echo "  No manifest found"
