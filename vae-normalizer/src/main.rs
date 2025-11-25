@@ -202,7 +202,7 @@ fn shake256_d256(data: &[u8]) -> String {
     hasher.update(data);
     let mut output = [0u8; 32]; // 256 bits = 32 bytes
     hasher.finalize(&mut output);
-    hex::encode(output)
+    hex::encode(&output)
 }
 
 /// Simple hex encoding without external dependency
@@ -505,14 +505,14 @@ fn write_manifest(output_dir: &Path, pairs: &[ImagePair]) -> Result<()> {
     ])?;
 
     for pair in pairs {
-        writer.write_record([
-            &pair.id,
-            &pair.original_path.to_string_lossy(),
-            &pair.vae_path.to_string_lossy(),
+        writer.write_record(&[
+            pair.id.as_str(),
+            &pair.original_path.to_string_lossy().into_owned(),
+            &pair.vae_path.to_string_lossy().into_owned(),
             &pair.original_size.to_string(),
             &pair.vae_size.to_string(),
-            &pair.original_checksum,
-            &pair.vae_checksum,
+            pair.original_checksum.as_str(),
+            pair.vae_checksum.as_str(),
             &pair.stratum.to_string(),
         ])?;
     }
