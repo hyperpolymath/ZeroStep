@@ -320,9 +320,31 @@ Run `just validate` for full RSR compliance verification.
 
 == License
 
-MIT License. See link:LICENSE.txt[LICENSE.txt] for details.
+This software is **dual-licensed**. Choose the license that best fits your use case:
 
-SPDX-License-Identifier: MIT
+[cols="1,2"]
+|===
+|License |Description
+
+|link:LICENSE-MIT.txt[MIT License]
+|Permissive, minimal restrictions, commercial use permitted
+
+|link:LICENSE-GPL.txt[GPL v3.0+]
+|Copyleft, derivative works must be open source, patent protection
+|===
+
+SPDX-License-Identifier: MIT OR GPL-3.0-or-later
+
+=== Palimpsest License (Encouraged)
+
+We encourage adoption of the link:LICENSE-PALIMPSEST.txt[Palimpsest License] as a complementary ethical framework emphasizing:
+
+* Attribution and provenance tracking
+* Collaborative improvement
+* Ethical use and community benefit
+* Transparent modification history
+
+The Palimpsest License is philosophically encouraged but not legally required.
 
 == Related
 
