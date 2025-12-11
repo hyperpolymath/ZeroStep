@@ -1,360 +1,76 @@
-// SPDX-FileCopyrightText: 2024 Joshua Jewell
-// SPDX-License-Identifier: MIT
-= VAE Dataset Normalizer
+= ZeroStep
+Jonathan D.A. Jewell <jonathan.jewell@gmail.com>
 :toc: macro
-:toclevels: 3
 :icons: font
 :source-highlighter: rouge
+:experimental:
+:url-github: https://github.com/hyperpolymath/ZeroStep
+:url-gitlab: https://gitlab.com/hyperpolymath/ZeroStep
+:url-bitbucket: https://bitbucket.org/hyperpolymath/ZeroStep
+:url-codeberg: https://codeberg.org/hyperpolymath/ZeroStep
 
-Normalize VAE-decoded image datasets for training AI artifact detection models with formal verification guarantees and RSR (Rhodium Standard Repository) compliance.
+Zero-step authentication and onboarding
+
+image:https://img.shields.io/badge/RSR-Certified-gold[RSR Certified]
+image:https://img.shields.io/badge/License-AGPL%20v3-blue[License]
 
 toc::[]
 
 == Overview
 
-The VAE Dataset Normalizer prepares VAE-decoded image datasets for machine learning research. It provides cryptographically verified data splits, formal proofs of correctness, and contrastive learning models to detect VAE artifacts.
+ZeroStep is part of the link:https://rhodium.sh[Rhodium Standard] (RSR) ecosystem.
 
-This project is fully compliant with the **Rhodium Standard Repository (RSR)** specification, ensuring reproducibility, security, and accountability.
-
-== Features
-
-* **SHAKE256 (d=256)** cryptographic checksums for data integrity (FIPS 202)
-* **Train/Test/Val/Calibration splits** (70/15/10/5) - both random and stratified
-* **Dublin Core metadata** via CUE configuration language
-* **Nickel schema** for flexible configuration
-* **Isabelle/HOL proofs** for split property verification
-* **Julia/Flux.jl utilities** for training integration
-* **Contrastive learning model** for VAE artifact detection
-* **Diff-based compression** reducing storage by ~50%
+Domain: *software-development*
 
 == Installation
 
-=== Prerequisites
-
-Required::
-* Rust 1.70+ with Cargo
-
-Optional::
-* https://cuelang.org[CUE] - metadata validation
-* https://nickel-lang.org[Nickel] - configuration
-* https://julialang.org[Julia] - training utilities
-* https://isabelle.in.tum.de[Isabelle] - formal proofs
-* https://github.com/casey/just[just] - modern task runner
-* https://podman.io[Podman] - container runtime (never Docker)
-
-=== Build
-
 [source,bash]
 ----
-# Using Just (recommended)
-just build
+# Clone from GitHub (primary)
+git clone {url-github}
 
-# Using Nix
-nix build
-
-# Direct Cargo
-cargo build --release
+# Or from mirrors
+git clone {url-gitlab}
+git clone {url-codeberg}
 ----
 
-== Usage
+== RSR Stack
 
-=== Normalize a Dataset
+This project follows RSR conventions:
 
-[source,bash]
-----
-# Full normalization with checksums
-vae-normalizer normalize -d /path/to/dataset -o /path/to/output
+* ✅ ReScript for frontend/logic
+* ✅ Deno for JS runtime
+* ✅ WASM for performance-critical code
+* ✅ Rust/OCaml/Haskell for systems/proofs
+* ✅ Guile/Scheme for configuration
+* ❌ No TypeScript
+* ❌ No Go
+* ❌ No npm
 
-# Fast mode (skip checksums)
-vae-normalizer normalize -d /path/to/dataset -o /path/to/output --skip-checksums
-
-# Custom seed and strata
-vae-normalizer normalize -d /path/to/dataset -o /path/to/output --seed 12345 --strata 8
-----
-
-=== Verify Output
-
-[source,bash]
-----
-# Basic verification
-vae-normalizer verify -o /path/to/output
-
-# With checksum verification
-vae-normalizer verify -o /path/to/output --checksums -d /path/to/dataset
-----
-
-=== Show Statistics
-
-[source,bash]
-----
-# Text format
-vae-normalizer stats -o /path/to/output
-
-# JSON format
-vae-normalizer stats -o /path/to/output --format json
-----
-
-=== Compute File Hash
-
-[source,bash]
-----
-vae-normalizer hash /path/to/image.png
-----
-
-=== Compress Dataset (Diff Format)
-
-Reduce storage by ~50% by storing VAE images as diffs from originals:
-
-[source,bash]
-----
-# Compress dataset (creates Original/ + Diff/ structure)
-vae-normalizer compress -d /path/to/dataset -o /path/to/compressed
-
-# Decompress (reconstruct full VAE/ directory)
-vae-normalizer decompress -d /path/to/compressed -o /path/to/reconstructed-vae
-
-# Reconstruct single image
-vae-normalizer reconstruct -o /path/to/original.png -d /path/to/diff.png -o output.png
-----
-
-The diff encoding uses: `diff = VAE - Original + 128` (offset for signed values). +
-Reconstruction: `VAE = Original + Diff - 128`.
-
-=== Train Contrastive Model
-
-[source,bash]
-----
-# Setup Julia dependencies
-just julia-setup
-
-# Train VAE artifact detector
-just train /path/to/dataset output 50 32
-
-# Train on compressed dataset
-just train-compressed /path/to/compressed output 50
-
-# Evaluate model
-just evaluate output/vae_classifier.bson /path/to/dataset
-----
-
-== Output Structure
-
-[source]
-----
-output/
-├── splits/
-│   ├── random_train.txt
-│   ├── random_test.txt
-│   ├── random_val.txt
-│   ├── random_calibration.txt
-│   ├── stratified_train.txt
-│   ├── stratified_test.txt
-│   ├── stratified_val.txt
-│   └── stratified_calibration.txt
-├── manifest.csv
-└── metadata.cue
-----
-
-== Dataset Structure
-
-=== Standard Format
-
-Expected input:
-[source]
-----
-dataset/
-├── Original/
-│   ├── image001.png
-│   ├── image002.png
-│   └── ...
-└── VAE/
-    ├── image001.png
-    ├── image002.png
-    └── ...
-----
-
-Image files are paired by filename stem (e.g., `Original/foo.png` pairs with `VAE/foo.png`).
-
-=== Compressed Diff Format
-
-After running `compress`, the dataset uses diff encoding:
-[source]
-----
-compressed/
-├── Original/
-│   ├── image001.png
-│   └── ...
-└── Diff/
-    ├── image001.png  # Encodes (VAE - Original + 128)
-    └── ...
-----
-
-Diff images compress well (~50% smaller) because most pixels cluster near 128 (gray) when VAE and original are similar.
-
-== Formal Verification
-
-The Isabelle/HOL theory `VAEDataset_Splits.thy` proves:
-
-1. **Disjointness**: No overlap between train/test/val/calibration sets
-2. **Exhaustiveness**: Every image appears in exactly one split
-3. **Ratio correctness**: Split sizes within 1% of targets
-4. **Bijection**: 1:1 correspondence between original and VAE images
-
-To verify proofs:
-[source,bash]
-----
-isabelle build -d . -b VAEDataset_Splits
-----
-
-== Julia Integration
-
-=== Standard Dataset
-
-[source,julia]
-----
-include("julia_utils.jl")
-using .VAEDatasetUtils
-
-# Load training split
-dataset = VAEDetectorDataset(
-    "output/splits/random_train.txt",
-    "output/manifest.csv",
-    "/path/to/dataset"
-)
-
-# Create data loader
-loader = DataLoader(dataset, batch_size=32, shuffle=true)
-
-# Train with Flux.jl
-for (x, y) in loader
-    # x: batch of images
-    # y: labels (0=original, 1=VAE)
-end
-----
-
-=== Compressed Dataset
-
-[source,julia]
-----
-include("julia_utils.jl")
-using .VAEDatasetUtils
-
-# Load compressed dataset (VAE images reconstructed on-the-fly)
-dataset = CompressedVAEDataset(
-    "output/splits/random_train.txt",
-    "/path/to/compressed/Original",
-    "/path/to/compressed/Diff"
-)
-
-# Same API as standard dataset
-loader = DataLoader(dataset, batch_size=32, shuffle=true)
-
-for (x, y) in loader
-    # VAE images are reconstructed automatically from diffs
-end
-----
-
-== Configuration
-
-=== CUE Schema
-
-Metadata validated against Dublin Core via `metadata_schema.cue`:
-
-[source,cue]
-----
-dublin_core: {
-    title:       "VAEDecodedImages-SDXL"
-    creator:     "Joshua Jewell"
-    type:        "Dataset"
-    format:      "image/png"
-}
-----
-
-=== Nickel Config
-
-Alternative configuration via `config.ncl`:
-
-[source,nickel]
-----
-{
-  splits.ratios = {
-    train = 0.70,
-    test = 0.15,
-    validation = 0.10,
-    calibration = 0.05,
-  },
-  checksums.algorithm = 'SHAKE256,
-  pipeline.vae_model = "SDXL VAE",
-}
-----
-
-== RSR Compliance
-
-This repository follows the **Rhodium Standard Repository (RSR)** specification:
-
-=== Documentation
-* README.adoc, LICENSE.txt, SECURITY.md, CODE_OF_CONDUCT.md
-* CONTRIBUTING.adoc with Tri-Perimeter Contribution Framework (TPCF)
-* GOVERNANCE.adoc, MAINTAINERS.md, FUNDING.yml
-* CHANGELOG.md, ROADMAP.md, REVERSIBILITY.md
-
-=== Security
-* Memory-safe Rust implementation (no unsafe code)
-* FIPS 202 compliant cryptography (SHAKE256)
-* Chainguard Wolfi container base
-* SPDX headers on all source files
-* Supply chain security (pinned dependencies)
-
-=== Infrastructure
-* Nix flakes for reproducibility
-* Podman containers (never Docker)
-* Nickel/CUE configuration
-* Justfile task runner
-
-=== Accountability
-* Mutually Assured Accountability (MAA) framework
-* Provenance chains (`.well-known/provenance.json`)
-* Git history with DCO sign-off
-
-Run `just validate` for full RSR compliance verification.
-
-== License
-
-This software is **dual-licensed**. Choose the license that best fits your use case:
+== Mirrors
 
 [cols="1,2"]
 |===
-|License |Description
+| Platform | URL
 
-|link:LICENSE-MIT.txt[MIT License]
-|Permissive, minimal restrictions, commercial use permitted
-
-|link:LICENSE-GPL.txt[GPL v3.0+]
-|Copyleft, derivative works must be open source, patent protection
+| GitHub (primary) | {url-github}
+| GitLab | {url-gitlab}
+| Bitbucket | {url-bitbucket}
+| Codeberg | {url-codeberg}
 |===
 
-SPDX-License-Identifier: MIT OR GPL-3.0-or-later
+== License
 
-=== Palimpsest License (Encouraged)
+Licensed under AGPL-3.0-or-later OR LicenseRef-Palimpsest-0.5.
 
-We encourage adoption of the link:LICENSE-PALIMPSEST.txt[Palimpsest License] as a complementary ethical framework emphasizing:
-
-* Attribution and provenance tracking
-* Collaborative improvement
-* Ethical use and community benefit
-* Transparent modification history
-
-The Palimpsest License is philosophically encouraged but not legally required.
-
-== Related
-
-* https://huggingface.co/datasets/joshuajewell/VAEDecodedImages-SDXL[VAEDecodedImages-SDXL]
-* https://huggingface.co/datasets/alexandrainst/nordjylland-news-image-captioning[nordjylland-news-image-captioning]
+See link:LICENSE[LICENSE] for details.
 
 == Contributing
 
-See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for contribution guidelines.
+See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc].
 
-== Security
+== Metadata
 
-See link:SECURITY.md[SECURITY.md] for security policy and vulnerability reporting.
+* Domain: software-development
+* Framework: RSR (Rhodium Standard Repository)
+* Dublin Core: link:.well-known/dc.xml[.well-known/dc.xml]
