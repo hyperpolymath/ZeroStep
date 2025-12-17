@@ -1,5 +1,5 @@
-<!-- SPDX-FileCopyrightText: 2024 Joshua Jewell -->
-<!-- SPDX-License-Identifier: MIT -->
+<!-- SPDX-FileCopyrightText: 2024-2025 hyperpolymath -->
+<!-- SPDX-License-Identifier: MIT OR AGPL-3.0-or-later -->
 
 # Roadmap
 
@@ -14,12 +14,15 @@ high-quality paired datasets with formal guarantees.
 
 ✅ **Complete**:
 - Core normalization functionality
-- SHAKE256 checksums
+- SHAKE256 checksums (FIPS 202 compliant)
 - Train/test/val/cal splits (random + stratified)
 - CUE metadata with Dublin Core
 - Isabelle/HOL formal proofs
 - Julia/Flux training utilities
-- RSR compliance
+- RSR compliance (Gold target)
+- SHA-pinned GitHub Actions (supply chain security)
+- CodeQL security scanning
+- OSSF Scorecard integration
 
 ## Short-Term (v1.1.0)
 
